@@ -1,0 +1,6 @@
+{
+  "name": "מערכת פנייה בווטסאפ - מחקר שיבא",
+  "description": "מערכת לסינון משתתפי מחקר שעברו 11 חודשים מגיוסם, והפקת קישורי שליחה מותאמים אישית בווטסאפ להזמנה לתרומת דגימת צואה.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
