@@ -1697,7 +1697,7 @@ export default function App() {
                         <div className="mt-3 bg-teal-50/70 border border-teal-200 p-3.5 rounded-xl text-teal-950 text-right leading-normal">
                           💡 <strong>מידע על הקובץ שלך:</strong> המטופלים במאגר זה נמצאים בחודשי מעקב הבאים:{" "}
                           <span className="font-mono font-bold text-teal-700 bg-white border border-teal-200 px-1.5 py-0.5 rounded">
-                            {Array.from(new Set(participants.map(p => p.monthsElapsed !== null ? Math.floor(p.monthsElapsed) : null).filter((val): val is number => val !== null && val >= 0))).sort((a, b) => a - b).join(", ") || "אין תאריכים תקינים בקובץ"}
+                            {Array.from(new Set(participants.map(p => p.monthsElapsed !== null ? Math.floor(p.monthsElapsed) : null).filter((val): val is number => val !== null && val >= 0))).sort((a: number, b: number) => a - b).join(", ") || "אין תאריכים תקינים בקובץ"}
                           </span>
                           . נסה לשנות את <strong>"חודש יעד למעקב"</strong> בראש המסך לכל אחד החודשים הללו כדי לראותם מיידית!
                         </div>
