@@ -527,12 +527,12 @@ export default function App() {
 
   const [exactMatchMode, setExactMatchMode] = useState<"floor" | "round">("floor"); 
   const [templateText, setTemplateText] = useState<string>(() => {
-    return localStorage.getItem("sheba_whatsapp_template_v2") || DEFAULT_TEMPLATE;
+    return localStorage.getItem("sheba_whatsapp_template_v2") || CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
   });
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("std_11m");
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("std_10m");
   const [linkMode, setLinkMode] = useState<"universal" | "web">("universal"); 
   const [isEditingTemplate, setIsEditingTemplate] = useState<boolean>(false);
-  const [targetFollowUpMonth, setTargetFollowUpMonth] = useState<number>(11); 
+  const [targetFollowUpMonth, setTargetFollowUpMonth] = useState<number>(10);
   
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filterWithdrawn, setFilterWithdrawn] = useState<boolean>(true);

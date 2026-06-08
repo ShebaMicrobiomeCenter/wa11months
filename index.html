@@ -382,12 +382,12 @@
       );
       const [exactMatchMode, setExactMatchMode] = useState("floor");
       const [templateText, setTemplateText] = useState(() => {
-        return localStorage.getItem("sheba_whatsapp_template_v2") || DEFAULT_TEMPLATE;
+        return localStorage.getItem("sheba_whatsapp_template_v2") || CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
       });
-      const [selectedTemplateId, setSelectedTemplateId] = useState("std_11m");
       const [linkMode, setLinkMode] = useState("universal");
       const [isEditingTemplate, setIsEditingTemplate] = useState(false);
-      const [targetFollowUpMonth, setTargetFollowUpMonth] = useState(11);
+      const [selectedTemplateId, setSelectedTemplateId] = useState("std_10m");
+      const [targetFollowUpMonth, setTargetFollowUpMonth] = useState(10);
 
       const [searchQuery, setSearchQuery] = useState("");
       const [filterWithdrawn, setFilterWithdrawn] = useState(true);
