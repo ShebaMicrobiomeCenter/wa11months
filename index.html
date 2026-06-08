@@ -5,6 +5,22 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>פורטל מרכז המיקרוביום והתזונה - שיבא</title>
+    <script>
+      window.onerror = function(message, source, lineno, colno, error) {
+        console.error('Global error caught:', message, 'at', source, ':', lineno, ':', colno);
+        setTimeout(function() {
+          var root = document.getElementById('root');
+          if (root && root.innerHTML === '') {
+            root.innerHTML = '<div style="padding: 20px; text-align: center; font-family: sans-serif;">' +
+                             '<h2>אירעה שגיאה בטעינת העמוד</h2>' +
+                             '<p>אנא נסה לרענן את העמוד או פנה לתמיכה הטכנית.</p>' +
+                             '<pre style="text-align: left; background: #eee; padding: 10px; display: inline-block;">' + message + '</pre>' +
+                             '</div>';
+          }
+        }, 1000);
+        return false;
+      };
+    </script>
   </head>
   <body>
     <div id="root"></div>

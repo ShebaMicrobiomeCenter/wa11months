@@ -527,7 +527,12 @@ export default function App() {
 
   const [exactMatchMode, setExactMatchMode] = useState<"floor" | "round">("floor"); 
   const [templateText, setTemplateText] = useState<string>(() => {
-    return localStorage.getItem("sheba_whatsapp_template_v2") || CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
+    try {
+      return localStorage.getItem("sheba_whatsapp_template_v2") || CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
+    } catch (e) {
+      console.error("Error accessing localStorage", e);
+      return CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
+    }
   });
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>("std_10m");
   const [linkMode, setLinkMode] = useState<"universal" | "web">("universal"); 
@@ -551,7 +556,11 @@ export default function App() {
 
   // Sync sentRecords to localStorage
   useEffect(() => {
-    localStorage.setItem("sheba_sent_records_v1", JSON.stringify(sentRecords));
+    try {
+      localStorage.setItem("sheba_sent_records_v1", JSON.stringify(sentRecords));
+    } catch (e) {
+      console.error("Error setting localStorage", e);
+    }
   }, [sentRecords]);
 
   // Tabs & Interactive workflows state
@@ -585,7 +594,11 @@ export default function App() {
 
   // Store configuration templates on modify
   useEffect(() => {
-    localStorage.setItem("sheba_whatsapp_template_v2", templateText);
+    try {
+      localStorage.setItem("sheba_whatsapp_template_v2", templateText);
+    } catch (e) {
+      console.error("Error setting localStorage", e);
+    }
   }, [templateText]);
 
   // Recalculate participant parameters on referenceDate / targetFollowUpMonth / exactMatchMode / rawRows change
@@ -1077,6 +1090,11 @@ export default function App() {
   const resetAllSentTags = () => {
     if (window.confirm("רוצה לאפס את כל רשומות השליחה השמורות בדפדפן?")) {
       setSentRecords({});
+      try {
+        localStorage.removeItem("sheba_sent_records_v1");
+      } catch (e) {
+        console.error("Error clearing localStorage", e);
+      }
     }
   };
 
