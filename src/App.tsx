@@ -538,6 +538,7 @@ export default function App() {
   const [filterWithdrawn, setFilterWithdrawn] = useState<boolean>(true);
   const [selectedParticipantId, setSelectedParticipantId] = useState<string | null>(null);
   const [copySuccessId, setCopySuccessId] = useState<string | null>(null);
+  const [autoAdvance, setAutoAdvance] = useState<boolean>(true);
 
   const [sentRecords, setSentRecords] = useState<Record<string, boolean>>(() => {
     try {
@@ -559,6 +560,14 @@ export default function App() {
   const [showManualForm, setShowManualForm] = useState<boolean>(false);
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
   const [editingNotes, setEditingNotes] = useState<string>("");
+  const tableRowRef = useRef<HTMLTableRowElement>(null);
+
+  useEffect(() => {
+    if (selectedParticipantId && tableRowRef.current) {
+      tableRowRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [selectedParticipantId]);
+
 
   // Manual form inputs state
   const [manualId, setManualId] = useState<string>("");
@@ -807,19 +816,6 @@ export default function App() {
     }
   };
 
-  const selectNextCandidate = () => {
-    const currentIndex = filteredParticipants.findIndex(p => p.id === selectedParticipantId);
-    if (currentIndex !== -1 && currentIndex < filteredParticipants.length - 1) {
-      setSelectedParticipantId(filteredParticipants[currentIndex + 1].id);
-    }
-  };
-
-  const selectPrevCandidate = () => {
-    const currentIndex = filteredParticipants.findIndex(p => p.id === selectedParticipantId);
-    if (currentIndex > 0) {
-      setSelectedParticipantId(filteredParticipants[currentIndex - 1].id);
-    }
-  };
 
   const updateMapping = (key: string, headerIndexValue: string) => {
     setHeaderMap(prev => ({
@@ -1018,6 +1014,39 @@ export default function App() {
   const activeList = getTabParticipants();
   const filteredParticipants = activeList;
 
+  const selectNextCandidate = () => {
+    const currentIndex = filteredParticipants.findIndex(p => p.id === selectedParticipantId);
+    if (currentIndex !== -1 && currentIndex < filteredParticipants.length - 1) {
+      setSelectedParticipantId(filteredParticipants[currentIndex + 1].id);
+      return filteredParticipants[currentIndex + 1].id;
+    }
+    return null;
+  };
+
+  const selectPrevCandidate = () => {
+    const currentIndex = filteredParticipants.findIndex(p => p.id === selectedParticipantId);
+    if (currentIndex > 0) {
+      setSelectedParticipantId(filteredParticipants[currentIndex - 1].id);
+      return filteredParticipants[currentIndex - 1].id;
+    }
+    return null;
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement) return;
+
+      if (e.key === "ArrowLeft") {
+        selectNextCandidate();
+      } else if (e.key === "ArrowRight") {
+        selectPrevCandidate();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedParticipantId, filteredParticipants]);
+
   const hasDateMappingIssue = participants.length > 0 && participants.filter(p => p.recruitmentDate !== null).length === 0;
 
   // Stats calculation
@@ -1029,6 +1058,12 @@ export default function App() {
       ...prev,
       [id]: true
     }));
+
+    if (autoAdvance) {
+      setTimeout(() => {
+        selectNextCandidate();
+      }, 500);
+    }
   };
 
   const removeSentMark = (id: string) => {
@@ -1697,12 +1732,13 @@ export default function App() {
                       return (
                         <tr 
                           key={p.id}
+                          ref={isSelected ? tableRowRef : null}
                           onClick={() => setSelectedParticipantId(p.id)}
                           className={`hover:bg-slate-50 transition-colors cursor-pointer ${
                             isSelected 
                               ? "bg-teal-50/50 font-black border-r-4 border-teal-600 scale-[0.99]" 
                               : isSent 
-                              ? "opacity-60 bg-slate-50/20 text-slate-450" 
+                              ? "bg-slate-100/80 text-slate-400"
                               : ""
                           }`}
                         >
@@ -1755,14 +1791,14 @@ export default function App() {
                           <td className="p-3 font-mono text-center text-slate-650">{p.phone}</td>
                           <td className="p-3 text-center">
                             {isSent ? (
-                              <span className="bg-emerald-50 border border-emerald-250 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
-                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                                פנייה נשלחה
+                              <span className="bg-emerald-100 border border-emerald-300 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 shadow-sm">
+                                <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" />
+                                נשלח ✓
                               </span>
                             ) : (
                               <span className="bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 animate-pulse">
                                 <Clock className="w-3.5 h-3.5 text-amber-600" />
-                                ממתין לשיגור
+                                ממתין
                               </span>
                             )}
                           </td>
@@ -1868,31 +1904,70 @@ export default function App() {
                   </div>
 
                   {/* Operational Launch WA CTAs */}
-                  <div className="flex gap-2 shrink-0 select-none">
-                    <a 
-                      href={getWhatsAppUrl(selectedParticipant)}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={() => markAsSent(selectedParticipant.id)}
-                      className="flex-1 bg-[#128C7E] hover:bg-[#075E54] active:bg-[#043e37] text-white font-extrabold text-xs py-2.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer text-center"
-                    >
-                      <Phone className="w-4 h-4 text-white fill-white" />
-                      שלח הודעה ב-WhatsApp של {selectedParticipant.firstName}
-                    </a>
+                  <div className="space-y-3 shrink-0 select-none">
+                    <div className="flex items-center justify-between px-1">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <div className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={autoAdvance}
+                            onChange={(e) => setAutoAdvance(e.target.checked)}
+                            className="sr-only peer"
+                          />
+                          <div className="w-8 h-4 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-teal-600"></div>
+                        </div>
+                        <span className="text-xs font-bold text-slate-700">מעבר אוטומטי לבא בתור</span>
+                      </label>
+
+                      <div className="text-xs font-mono font-bold text-slate-500">
+                         {filteredParticipants.findIndex(x => x.id === selectedParticipant.id) + 1} / {filteredParticipants.length}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 items-center">
+                      <button
+                        onClick={selectPrevCandidate}
+                        disabled={filteredParticipants.findIndex(x => x.id === selectedParticipant.id) === 0}
+                        className="bg-white hover:bg-slate-50 text-slate-700 p-4 rounded-2xl border-2 border-slate-200 transition-all disabled:opacity-20 cursor-pointer shadow-md hover:border-teal-500 active:scale-95 group"
+                        title="הקודם (חץ ימינה)"
+                      >
+                        <ChevronRight className="w-8 h-8 group-hover:text-teal-600" />
+                      </button>
+
+                      <a
+                        href={getWhatsAppUrl(selectedParticipant)}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => markAsSent(selectedParticipant.id)}
+                        className="flex-1 bg-[#25D366] hover:bg-[#128C7E] active:bg-[#075E54] text-white font-black text-lg py-4 px-6 rounded-2xl shadow-xl hover:shadow-[#25D366]/20 transition-all flex items-center justify-center gap-4 cursor-pointer text-center border-b-4 border-green-700 active:border-b-0 active:translate-y-1"
+                      >
+                        <Phone className="w-7 h-7 text-white fill-white" />
+                        <span className="tracking-tight">שלח הודעה ל{selectedParticipant.firstName}</span>
+                      </a>
+
+                      <button
+                        onClick={selectNextCandidate}
+                        disabled={filteredParticipants.findIndex(x => x.id === selectedParticipant.id) === filteredParticipants.length - 1}
+                        className="bg-white hover:bg-slate-50 text-slate-700 p-4 rounded-2xl border-2 border-slate-200 transition-all disabled:opacity-20 cursor-pointer shadow-md hover:border-teal-500 active:scale-95 group"
+                        title="הבא (חץ שמאלה)"
+                      >
+                        <ChevronLeft className="w-8 h-8 group-hover:text-teal-600" />
+                      </button>
+                    </div>
 
                     <button 
                       onClick={() => copyToClipboard(replacePlaceholders(templateText, selectedParticipant), selectedParticipant.id)}
-                      className="bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs py-2.5 px-5 rounded-xl border border-slate-300 transition-all flex items-center gap-1.5 cursor-pointer shadow-3xs"
+                      className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-[11px] py-2 rounded-lg border border-slate-200 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       {copySuccessId === selectedParticipant.id ? (
                         <>
-                          <Check className="w-4 h-4 text-teal-600 stroke-[2.5]" />
-                          <span className="text-teal-700">הועתק בהצלחה!</span>
+                          <Check className="w-3.5 h-3.5 text-teal-600 stroke-[2.5]" />
+                          <span className="text-teal-700">התוכן הועתק!</span>
                         </>
                       ) : (
                         <>
-                          <Copy className="w-4 h-4 text-slate-500" />
-                          <span>העתק תוכן לפנייה</span>
+                          <Copy className="w-3.5 h-3.5 text-slate-500" />
+                          <span>העתק תוכן הודעה</span>
                         </>
                       )}
                     </button>
@@ -1959,40 +2034,18 @@ export default function App() {
                       {sentRecords[selectedParticipant.id] ? (
                         <button 
                           onClick={() => removeSentMark(selectedParticipant.id)}
-                          className="flex-1 bg-red-55/15 hover:bg-red-55/20 text-red-700 py-1.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer border border-red-200 text-center"
+                          className="flex-1 bg-red-55/10 hover:bg-red-55/20 text-red-700 py-1.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer border border-red-200 text-center"
                         >
-                          בטל סימון "פנייה נשלחה"
+                          בטל סימון "נשלח" ✖
                         </button>
                       ) : (
                         <button 
                           onClick={() => markAsSent(selectedParticipant.id)}
                           className="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 py-1.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer border border-emerald-250 text-center"
                         >
-                          סמן פנייה כ"נשלחה"
+                          סמן כ"נשלח" באופן ידני ✓
                         </button>
                       )}
-                    </div>
-
-                    <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold px-1 py-0.5">
-                      <button 
-                        onClick={selectPrevCandidate}
-                        disabled={filteredParticipants.findIndex(x => x.id === selectedParticipant.id) === 0}
-                        className="text-slate-600 hover:text-teal-600 disabled:opacity-30 cursor-pointer flex items-center gap-0.5 font-bold"
-                      >
-                        <ChevronRight className="w-3.5 h-3.5" />
-                        הקודם
-                      </button>
-                      <span className="text-slate-500 font-mono font-bold">
-                        {filteredParticipants.findIndex(x => x.id === selectedParticipant.id) + 1} / {filteredParticipants.length} מיועדים
-                      </span>
-                      <button 
-                        onClick={selectNextCandidate}
-                        disabled={filteredParticipants.findIndex(x => x.id === selectedParticipant.id) === filteredParticipants.length - 1}
-                        className="text-slate-600 hover:text-teal-600 disabled:opacity-30 cursor-pointer flex items-center gap-0.5 font-bold"
-                      >
-                        הבא
-                        <ChevronLeft className="w-3.5 h-3.5" />
-                      </button>
                     </div>
                   </div>
 
