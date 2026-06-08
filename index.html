@@ -8,6 +8,30 @@
   </head>
   <body>
     <div id="root"></div>
+    <div id="error-display" style="display:none; padding: 20px; color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; margin: 20px; border-radius: 5px; font-family: sans-serif;">
+      <h2 style="margin-top: 0;">שגיאת מערכת / System Error</h2>
+      <p id="error-message"></p>
+      <pre id="error-stack" style="white-space: pre-wrap; font-size: 12px;"></pre>
+      <button onclick="location.reload()" style="padding: 8px 16px; background: #721c24; color: white; border: none; border-radius: 4px; cursor: pointer;">טען מחדש / Reload</button>
+    </div>
+    <script>
+      window.onerror = function(message, source, lineno, colno, error) {
+        var display = document.getElementById('error-display');
+        var msg = document.getElementById('error-message');
+        var stack = document.getElementById('error-stack');
+        if (display && msg) {
+          display.style.display = 'block';
+          msg.textContent = message;
+          if (error && error.stack) {
+            stack.textContent = error.stack;
+          } else {
+            stack.textContent = 'Source: ' + source + '\nLine: ' + lineno + ':' + colno;
+          }
+        }
+        return false;
+      };
+      console.log('Global error handler initialized');
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

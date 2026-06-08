@@ -527,7 +527,12 @@ export default function App() {
 
   const [exactMatchMode, setExactMatchMode] = useState<"floor" | "round">("floor"); 
   const [templateText, setTemplateText] = useState<string>(() => {
-    return localStorage.getItem("sheba_whatsapp_template_v2") || CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
+    try {
+      return localStorage.getItem("sheba_whatsapp_template_v2") || CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
+    } catch (e) {
+      console.warn("localStorage access failed:", e);
+      return CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
+    }
   });
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>("std_10m");
   const [linkMode, setLinkMode] = useState<"universal" | "web">("universal"); 
@@ -551,8 +556,16 @@ export default function App() {
 
   // Sync sentRecords to localStorage
   useEffect(() => {
-    localStorage.setItem("sheba_sent_records_v1", JSON.stringify(sentRecords));
+    try {
+      localStorage.setItem("sheba_sent_records_v1", JSON.stringify(sentRecords));
+    } catch (e) {
+      console.warn("Failed to save to localStorage:", e);
+    }
   }, [sentRecords]);
+
+  useEffect(() => {
+    console.log("App component mounted");
+  }, []);
 
   // Tabs & Interactive workflows state
   const [activeTab, setActiveTab] = useState<"matching" | "all" | "sent">("matching"); 
