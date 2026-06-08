@@ -476,7 +476,7 @@ const DEFAULT_TEMPLATE = `שלום {שם פרטי} היקר/ה, 😊
 
 חלפו כ-{חודשים שעברו} חודשים מאז שהצטרפת וביקרת במחקר המחקרי החשוב שלנו בשיבא (תאריך גיוס: {תאריך גיוס}). 
 
-נשמח מאוד להזמין אותך למסור דגימת מעקב פשוטה וחשובה מאוד (דגימת צואה לצורך מחקר המיקרוביום) של 11 חודשים. ✨
+נשמח מאוד להזמין אותך למסור דגימת מעקב פשוטה וחשובה מאוד (דגימת צואה לצורך מחקר המיקרוביום) של {חודשים שעברו} חודשים. ✨
 
 ההשתתפות והתרומה המתמשכת שלך קריטיות להצלחת המחקר ולפיתוח רפואה מותאמת אישית! נוכל לתאם עבורך ללא כל עלות הגעה של שליח מיוחד שיביא את ערכת האיסוף וייקח אותה בחזרה ישירות מפתח ביתך בזמן הנוח לך. 📦
 
@@ -488,6 +488,11 @@ const CLINICAL_TEMPLATES = [
     id: "std_11m",
     name: "🩺 פנייה סטנדרטית מעקב חודשי מעמיק",
     text: DEFAULT_TEMPLATE
+  },
+  {
+    id: "std_10m",
+    name: "🩺 פנייה למעקב 10 חודשים (צואה)",
+    text: `שלום {שם פרטי} היקר/ה, 😊\nכאן צוות מחקר המיקרוביום והתזונה בשיבא תל-השומר. 🌸\n\nחלפו כ-10 חודשים מאז שהצטרפת למחקר המחקרי שלנו. 🔬\n\nנשמח להזמין אותך למסור דגימת מעקב של 10 חודשים (דגימת צואה). נוכל לתאם עבורך שליח שיגיע עד הבית ללא עלות! 📦\n\nהאם זה רלוונטי עבורך? נשמח לעדכון כאן בווטסאפ.\nתודה רבה! ✨`
   },
   {
     id: "gut_only",
@@ -761,7 +766,7 @@ export default function App() {
 
   const replacePlaceholders = (template: string, p: Participant) => {
     if (!p) return "";
-    const monthsStr = p.monthsElapsed !== null ? Math.floor(p.monthsElapsed).toString() : "11";
+    const monthsStr = p.monthsElapsed !== null ? Math.floor(p.monthsElapsed).toString() : targetFollowUpMonth.toString();
     const cleanFirstName = p.firstName || "משתתף/ת";
     const cleanLastName = p.lastName || "";
     const dateStr = p.recruitmentDateRaw ? String(p.recruitmentDateRaw) : "מועד הגיוס";
@@ -1087,7 +1092,7 @@ export default function App() {
             <span className="text-slate-300 font-medium">חודש יעד למעקב:</span>
             <select 
               value={targetFollowUpMonth}
-              onChange={(e) => setTargetFollowUpMonth(parseInt(e.target.value, 15))}
+              onChange={(e) => setTargetFollowUpMonth(parseInt(e.target.value, 10))}
               className="bg-transparent text-teal-300 font-bold outline-none text-xs cursor-pointer border-0 p-0 focus:ring-0"
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].map((m) => (
