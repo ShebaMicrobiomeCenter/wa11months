@@ -1117,10 +1117,10 @@ export default function App() {
   const selectedParticipant = filteredParticipants.find(p => p.id === selectedParticipantId) || filteredParticipants[0] || null;
 
   return (
-    <div className="h-screen w-full flex flex-col overflow-hidden bg-slate-50 text-slate-800 font-sans selection:bg-teal-100 selection:text-teal-950" dir="rtl">
+    <div className="min-h-screen lg:h-screen w-full flex flex-col lg:overflow-hidden bg-slate-50 text-slate-800 font-sans selection:bg-teal-100 selection:text-teal-950" dir="rtl">
       
       {/* BRAND NEW LUXURIOUS HEADER */}
-      <header className="h-16 bg-[#0E2232] text-white flex items-center justify-between px-6 shrink-0 z-30 shadow-lg border-b border-white/5">
+      <header className="h-auto py-4 lg:py-0 lg:h-16 bg-[#0E2232] text-white flex flex-col lg:flex-row items-center justify-between px-6 shrink-0 z-30 shadow-lg border-b border-white/5 gap-4 lg:gap-0">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center text-white font-extrabold text-xs shadow-md tracking-wider">
             שיבא
@@ -1216,7 +1216,7 @@ export default function App() {
       </section>
 
       {/* CORE FRAME LAYOUT */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row lg:overflow-hidden">
         
         {/* RIGHT CONTROL PANEL - SIZED AND DESIGNED PERFECTLY */}
         <aside className="w-full lg:w-80 bg-white border-l border-slate-250 flex flex-col p-4 overflow-y-auto shrink-0 space-y-5">
@@ -1532,9 +1532,9 @@ export default function App() {
         </aside>
 
         {/* WORKSPACE PRESTIGE MAIN PORT - GORGEOUS GRID CARD */}
-        <section className="flex-1 flex flex-col overflow-hidden p-6 gap-6">
+        <section className="flex-1 flex flex-col lg:overflow-hidden p-4 lg:p-6 gap-6">
           
-          <div className="bg-white rounded-2xl border border-slate-200 flex-1 flex flex-col overflow-hidden shadow-sm">
+          <div className="bg-white rounded-2xl border border-slate-200 flex-1 flex flex-col lg:overflow-hidden shadow-sm">
             
             {hasDateMappingIssue && (
               <div className="m-4 p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-950 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs shadow-sm z-20">
@@ -2085,9 +2085,9 @@ export default function App() {
       </div>
 
       {/* PRIVACY GUARD COMPLIANCE FOOTER */}
-      <footer className="h-9 bg-white border-t border-slate-200 flex items-center justify-between px-6 shrink-0 text-[10px] text-slate-450 z-30 select-none font-bold">
-        <div>© {new Date().getFullYear()} מחלקת מחקר תזונה ומיקרוביום, מרכז רפואי שיבא, תל השומר</div>
-        <div className="text-rose-700/80 hover:text-rose-700 transition-colors flex items-center gap-1.5">
+      <footer className="h-auto lg:h-9 bg-white border-t border-slate-200 flex flex-col lg:flex-row items-center justify-between px-6 py-2 lg:py-0 shrink-0 text-[10px] text-slate-450 z-30 select-none font-bold gap-2">
+        <div className="text-center lg:text-right">© {new Date().getFullYear()} מחלקת מחקר תזונה ומיקרוביום, מרכז רפואי שיבא, תל השומר</div>
+        <div className="text-rose-700/80 hover:text-rose-700 transition-colors flex items-center gap-1.5 text-center lg:text-left justify-center lg:justify-end">
           <Shield className="w-3.5 h-3.5 text-rose-600 animate-pulse" />
           סודיות רפואית עליונה: כל נתוני המעבדה והגליונות המועלים מנותחים פנימית מקומית בדפדפן שלך בלבד!
         </div>
