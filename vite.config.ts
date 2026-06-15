@@ -5,13 +5,25 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    base: '/wa11months/',
+    base: './',
     plugins: [
       react(),
       tailwindcss(),
       {
         name: 'redirect-base',
         configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            const base = '/wa11months';
+            const url = new URL(req.url || '', `http://${req.headers.host}`);
+            if (url.pathname === base) {
+              res.writeHead(301, {Location: base + '/' + url.search});
+              res.end();
+            } else {
+              next();
+            }
+          });
+        },
+        configurePreviewServer(server) {
           server.middlewares.use((req, res, next) => {
             const base = '/wa11months';
             const url = new URL(req.url || '', `http://${req.headers.host}`);
