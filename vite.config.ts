@@ -3,14 +3,40 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
 
-export default defineConfig(({ mode }) => {
-  const isProd = mode === 'production';
+export default defineConfig(() => {
+  const base = '/wa11months/';
+  const baseNoSlash = base.replace(/\/$/, '');
 
   return {
-    base: isProd ? '/wa11months/' : '/',
+    base,
     plugins: [
       react(),
       tailwindcss(),
+      {
+        name: 'redirect-base',
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            const url = new URL(req.url || '', `http://${req.headers.host || 'localhost'}`);
+            if (url.pathname === baseNoSlash) {
+              res.writeHead(301, {Location: base + url.search});
+              res.end();
+            } else {
+              next();
+            }
+          });
+        },
+        configurePreviewServer(server) {
+          server.middlewares.use((req, res, next) => {
+            const url = new URL(req.url || '', `http://${req.headers.host || 'localhost'}`);
+            if (url.pathname === baseNoSlash) {
+              res.writeHead(301, {Location: base + url.search});
+              res.end();
+            } else {
+              next();
+            }
+          });
+        },
+      },
     ],
     resolve: {
       alias: {
