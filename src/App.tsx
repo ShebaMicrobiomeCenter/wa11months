@@ -1830,7 +1830,7 @@ export default function App() {
           </div>
 
           {/* DYNAMIC LOWER LAYOUT WORKSPACE FOR WHATSAPP COMMUNICATOR */}
-          <div className="min-h-[300px] lg:h-[280px] shrink-0 grid grid-cols-1 md:grid-cols-12 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+          <div className="min-h-[400px] lg:h-[420px] shrink-0 grid grid-cols-1 md:grid-cols-12 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
             
             {selectedParticipant ? (
               <>
@@ -1921,58 +1921,8 @@ export default function App() {
                     )}
                   </div>
 
-                  {/* Operational Launch WA CTAs */}
+                  {/* Operational Launch WA CTAs - Simplified Preview Mode */}
                   <div className="space-y-3 shrink-0 select-none">
-                    <div className="flex items-center justify-between px-1">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <div className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={autoAdvance}
-                            onChange={(e) => setAutoAdvance(e.target.checked)}
-                            className="sr-only peer"
-                          />
-                          <div className="w-8 h-4 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-teal-600"></div>
-                        </div>
-                        <span className="text-xs font-bold text-slate-700">מעבר אוטומטי לבא בתור</span>
-                      </label>
-
-                      <div className="text-xs font-mono font-bold text-slate-500">
-                         {filteredParticipants.findIndex(x => x.id === selectedParticipant.id) + 1} / {filteredParticipants.length}
-                      </div>
-                    </div>
-
-                    <div className="flex gap-3 items-center">
-                      <button
-                        onClick={selectPrevCandidate}
-                        disabled={filteredParticipants.findIndex(x => x.id === selectedParticipant.id) === 0}
-                        className="bg-white hover:bg-slate-50 text-slate-700 p-4 rounded-2xl border-2 border-slate-200 transition-all disabled:opacity-20 cursor-pointer shadow-md hover:border-teal-500 active:scale-95 group"
-                        title="הקודם (חץ ימינה)"
-                      >
-                        <ChevronRight className="w-8 h-8 group-hover:text-teal-600" />
-                      </button>
-
-                      <a
-                        href={getWhatsAppUrl(selectedParticipant)}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={() => markAsSent(selectedParticipant.id)}
-                        className="flex-1 bg-[#25D366] hover:bg-[#128C7E] active:bg-[#075E54] text-white font-black text-lg py-4 px-6 rounded-2xl shadow-xl hover:shadow-[#25D366]/20 transition-all flex items-center justify-center gap-4 cursor-pointer text-center border-b-4 border-green-700 active:border-b-0 active:translate-y-1"
-                      >
-                        <Phone className="w-7 h-7 text-white fill-white" />
-                        <span className="tracking-tight">שלח הודעה ל{selectedParticipant.firstName}</span>
-                      </a>
-
-                      <button
-                        onClick={selectNextCandidate}
-                        disabled={filteredParticipants.findIndex(x => x.id === selectedParticipant.id) === filteredParticipants.length - 1}
-                        className="bg-white hover:bg-slate-50 text-slate-700 p-4 rounded-2xl border-2 border-slate-200 transition-all disabled:opacity-20 cursor-pointer shadow-md hover:border-teal-500 active:scale-95 group"
-                        title="הבא (חץ שמאלה)"
-                      >
-                        <ChevronLeft className="w-8 h-8 group-hover:text-teal-600" />
-                      </button>
-                    </div>
-
                     <button 
                       onClick={() => copyToClipboard(replacePlaceholders(templateText, selectedParticipant), selectedParticipant.id)}
                       className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-[11px] py-2 rounded-lg border border-slate-200 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
@@ -2019,6 +1969,10 @@ export default function App() {
                           <span className="font-bold text-slate-800 font-mono">{selectedParticipant.phone || "-"}</span>
                         </div>
                       </div>
+                      <div>
+                        <span className="text-[9.5px] text-slate-400 block font-bold mb-0.5">תאריך ביקור אחרון:</span>
+                        <span className="font-bold text-slate-800 font-mono">{selectedParticipant.recruitmentDateRaw || "-"}</span>
+                      </div>
                     </div>
 
                     {/* Editor for clinical notes */}
@@ -2048,6 +2002,56 @@ export default function App() {
 
                   {/* Operational navigation inside selection */}
                   <div className="space-y-3 pb-0.5 select-none shrink-0 border-t border-slate-200 pt-3">
+                    <div className="flex items-center justify-between px-1">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <div className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={autoAdvance}
+                            onChange={(e) => setAutoAdvance(e.target.checked)}
+                            className="sr-only peer"
+                          />
+                          <div className="w-7 h-3.5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-2.5 after:w-2.5 after:transition-all peer-checked:bg-teal-600"></div>
+                        </div>
+                        <span className="text-[10px] font-bold text-slate-700">מעבר אוטומטי</span>
+                      </label>
+
+                      <div className="text-[10px] font-mono font-bold text-slate-500">
+                         {filteredParticipants.findIndex(x => x.id === selectedParticipant.id) + 1} / {filteredParticipants.length}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 items-center">
+                      <button
+                        onClick={selectPrevCandidate}
+                        disabled={filteredParticipants.findIndex(x => x.id === selectedParticipant.id) === 0}
+                        className="bg-white hover:bg-slate-50 text-slate-700 p-2 rounded-xl border border-slate-200 transition-all disabled:opacity-20 cursor-pointer shadow-sm hover:border-teal-500 active:scale-95 group shrink-0"
+                        title="הקודם (חץ ימינה)"
+                      >
+                        <ChevronRight className="w-5 h-5 group-hover:text-teal-600" />
+                      </button>
+
+                      <a
+                        href={getWhatsAppUrl(selectedParticipant)}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => markAsSent(selectedParticipant.id)}
+                        className="flex-1 bg-[#25D366] hover:bg-[#128C7E] active:bg-[#075E54] text-white font-black text-sm py-3 px-4 rounded-xl shadow-lg hover:shadow-[#25D366]/20 transition-all flex items-center justify-center gap-2 cursor-pointer text-center border-b-2 border-green-700 active:border-b-0 active:translate-y-0.5"
+                      >
+                        <Phone className="w-4 h-4 text-white fill-white" />
+                        <span className="tracking-tight">שלח הודעה</span>
+                      </a>
+
+                      <button
+                        onClick={selectNextCandidate}
+                        disabled={filteredParticipants.findIndex(x => x.id === selectedParticipant.id) === filteredParticipants.length - 1}
+                        className="bg-white hover:bg-slate-50 text-slate-700 p-2 rounded-xl border border-slate-200 transition-all disabled:opacity-20 cursor-pointer shadow-sm hover:border-teal-500 active:scale-95 group shrink-0"
+                        title="הבא (חץ שמאלה)"
+                      >
+                        <ChevronLeft className="w-5 h-5 group-hover:text-teal-600" />
+                      </button>
+                    </div>
+
                     <div className="flex gap-2">
                       {sentRecords[selectedParticipant.id] ? (
                         <button 
