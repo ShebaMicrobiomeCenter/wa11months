@@ -485,14 +485,14 @@ const DEFAULT_TEMPLATE = `מרכז המיקרוביום, שיבא
 
 const CLINICAL_TEMPLATES = [
   {
-    id: "std_12m",
-    name: "🩺 פנייה סטנדרטית מעקב שנה (12 חודשים)",
+    id: "std_11m",
+    name: "🩺 פנייה סטנדרטית מעקב חודשי מעמיק",
     text: DEFAULT_TEMPLATE
   },
   {
     id: "std_10m",
     name: "🩺 פנייה למעקב 10 חודשים (צואה)",
-    text: `שלום {שם פרטי} היקר/ה, 😊\nכאן צוות מחקר המיקרוביום והתזונה בשיבא תל-השומר. 🌸\n\nחלפו כ-10 חודשים מאז שהצטרפת למחקר המחקרי שלנו. 🔬\n\nנשמח להזמין אותך למסור דגימת מעקב של 10 חודשים (דגימת צואה). נוכל לתאם עבורך שליח שיגיע עד הבית ללא עלות! 📦\n\nהאם זה רלוונטי עבורך? נשמח לעדכון כאן בווטסאפ.\nתודה רבה! ✨`
+    text: DEFAULT_TEMPLATE
   },
   {
     id: "gut_only",
@@ -528,16 +528,16 @@ export default function App() {
   const [exactMatchMode, setExactMatchMode] = useState<"floor" | "round">("floor"); 
   const [templateText, setTemplateText] = useState<string>(() => {
     try {
-      return localStorage.getItem("sheba_whatsapp_template_v3") || CLINICAL_TEMPLATES.find(t => t.id === "std_12m")?.text || DEFAULT_TEMPLATE;
+      return localStorage.getItem("sheba_whatsapp_template_v3") || CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
     } catch (e) {
       console.error("Error accessing localStorage", e);
-      return CLINICAL_TEMPLATES.find(t => t.id === "std_12m")?.text || DEFAULT_TEMPLATE;
+      return CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
     }
   });
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("std_12m");
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("std_10m");
   const [linkMode, setLinkMode] = useState<"universal" | "web">("universal"); 
   const [isEditingTemplate, setIsEditingTemplate] = useState<boolean>(false);
-  const [targetFollowUpMonth, setTargetFollowUpMonth] = useState<number>(12);
+  const [targetFollowUpMonth, setTargetFollowUpMonth] = useState<number>(10);
   
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filterWithdrawn, setFilterWithdrawn] = useState<boolean>(true);
