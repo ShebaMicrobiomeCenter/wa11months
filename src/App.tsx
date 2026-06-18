@@ -471,17 +471,17 @@ export function getSampleParticipants(refDate: Date): Participant[] {
   });
 }
 
-const DEFAULT_TEMPLATE = `שלום {שם פרטי} היקר/ה, 😊
-כאן צוות מחקר המיקרוביום והתזונה בשיבא תל-השומר. 🌸
+const DEFAULT_TEMPLATE = `מרכז המיקרוביום, שיבא
 
-חלפו כ-{חודשים שעברו} חודשים מאז שהצטרפת וביקרת במחקר המחקרי החשוב שלנו בשיבא (תאריך גיוס: {תאריך גיוס}). 
+עברה כשנה מאז השתתפותך במחקר המיקרוביום כחלק מבדיקות הסקר בשיבא.
+נשמח לקבל דוגמה נוספת ועדכון שאלונים (במידה ואת/ה מעוניין/ת).
 
-נשמח מאוד להזמין אותך למסור דגימת מעקב פשוטה וחשובה מאוד (דגימת צואה לצורך מחקר המיקרוביום) של {חודשים שעברו} חודשים. ✨
+- אם גם השנה אתה משתתף בבדיקות הסקר, ניתן לתאם הגעה מול הסקר, ולעדכן גם אותנו.
+- אם השנה אינך משתתף בסקר, עדיין ניתן להשתתף בבדיקת המיקרוביום ללא עלות, אך יש צורך לדאוג להבאת הדוגמא לשיבא. צור עימנו קשר.
 
-ההשתתפות והתרומה המתמשכת שלך קריטיות להצלחת המחקר ולפיתוח רפואה מותאמת אישית! נוכל לתאם עבורך ללא כל עלות הגעה של שליח מיוחד שיביא את ערכת האיסוף וייקח אותה בחזרה ישירות מפתח ביתך בזמן הנוח לך. 📦
-
-האם נוכל להזמין עבורך שליח או לתאם את הסידורים? נשמח לעדכונים שלך כאן בווטסאפ או בטלפון בכל זמן.
-תודה רבה מקרב לב! 🔬🧬`;
+מרכז המיקרוביום שיבא,
+טלפון (או ווטסאפ): 03-5304985
+דוא״ל: Microbiome.Center@sheba.health.gov.il<mailto:Microbiome.Center@sheba.health.gov.il>`;
 
 const CLINICAL_TEMPLATES = [
   {
@@ -492,7 +492,7 @@ const CLINICAL_TEMPLATES = [
   {
     id: "std_10m",
     name: "🩺 פנייה למעקב 10 חודשים (צואה)",
-    text: `שלום {שם פרטי} היקר/ה, 😊\nכאן צוות מחקר המיקרוביום והתזונה בשיבא תל-השומר. 🌸\n\nחלפו כ-10 חודשים מאז שהצטרפת למחקר המחקרי שלנו. 🔬\n\nנשמח להזמין אותך למסור דגימת מעקב של 10 חודשים (דגימת צואה). נוכל לתאם עבורך שליח שיגיע עד הבית ללא עלות! 📦\n\nהאם זה רלוונטי עבורך? נשמח לעדכון כאן בווטסאפ.\nתודה רבה! ✨`
+    text: DEFAULT_TEMPLATE
   },
   {
     id: "gut_only",
@@ -528,7 +528,7 @@ export default function App() {
   const [exactMatchMode, setExactMatchMode] = useState<"floor" | "round">("floor"); 
   const [templateText, setTemplateText] = useState<string>(() => {
     try {
-      return localStorage.getItem("sheba_whatsapp_template_v2") || CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
+      return localStorage.getItem("sheba_whatsapp_template_v3") || CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
     } catch (e) {
       console.error("Error accessing localStorage", e);
       return CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
@@ -595,7 +595,7 @@ export default function App() {
   // Store configuration templates on modify
   useEffect(() => {
     try {
-      localStorage.setItem("sheba_whatsapp_template_v2", templateText);
+      localStorage.setItem("sheba_whatsapp_template_v3", templateText);
     } catch (e) {
       console.error("Error setting localStorage", e);
     }
