@@ -1142,19 +1142,19 @@ export default function App() {
     <div className="min-h-screen lg:h-screen w-full flex flex-col lg:overflow-hidden bg-slate-50 text-slate-800 font-sans selection:bg-teal-100 selection:text-teal-950" dir="rtl">
       
       {/* BRAND NEW LUXURIOUS HEADER */}
-      <header className="h-auto py-3 lg:py-0 lg:h-14 bg-[#0E2232] text-white flex flex-col lg:flex-row items-center justify-between px-6 shrink-0 z-30 shadow-lg border-b border-white/5 gap-3 lg:gap-0">
+      <header className="h-auto py-3 lg:py-0 lg:h-11 bg-[#0E2232] text-white flex flex-col lg:flex-row items-center justify-between px-4 shrink-0 z-30 shadow-lg border-b border-white/5 gap-3 lg:gap-0">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center text-white font-extrabold text-xs shadow-md tracking-wider">
+          <div className="w-7 h-7 bg-teal-500 rounded-lg flex items-center justify-center text-white font-extrabold text-[10px] shadow-md tracking-wider">
             שיבא
           </div>
           <div>
-            <h1 className="text-base font-bold tracking-tight flex items-center gap-2">
+            <h1 className="text-[13.5px] font-bold tracking-tight flex items-center gap-1.5">
               <span>פורטל מרכז המיקרוביום והתזונה</span>
-              <span className="text-[10px] bg-teal-500/10 text-teal-300 px-2 py-0.5 rounded-full border border-teal-500/20 font-mono tracking-wider">
+              <span className="text-[9px] bg-teal-500/10 text-teal-300 px-1.5 py-0 rounded-full border border-teal-500/20 font-mono tracking-wider">
                 ערוץ תקשורת מעקב {targetFollowUpMonth} חודשים
               </span>
             </h1>
-            <p className="text-[10px] text-slate-400 font-medium">ניהול ממוחשב, סינון עיוור של פציאנטים ופניות ווטסאפ שבועיות | Sheba Medical Center</p>
+            <p className="text-[9px] text-slate-400 font-medium">ניהול ממוחשב, סינון עיוור של פציאנטים ופניות ווטסאפ שבועיות | Sheba Medical Center</p>
           </div>
         </div>
 
@@ -1162,13 +1162,13 @@ export default function App() {
         <div className="flex items-center gap-3">
           
           {/* Target Month */}
-          <div className="flex items-center gap-2 bg-slate-800/60 px-3 py-1.5 rounded-lg text-xs border border-white/10">
+          <div className="flex items-center gap-2 bg-slate-800/60 px-2 py-1 rounded-lg text-[11px] border border-white/10">
             <Clock className="w-3.5 h-3.5 text-teal-400" />
             <span className="text-slate-300 font-medium">חודש יעד למעקב:</span>
             <select 
               value={targetFollowUpMonth}
               onChange={(e) => setTargetFollowUpMonth(parseInt(e.target.value, 10))}
-              className="bg-transparent text-teal-300 font-bold outline-none text-xs cursor-pointer border-0 p-0 focus:ring-0"
+              className="bg-transparent text-teal-300 font-bold outline-none text-[11px] cursor-pointer border-0 p-0 focus:ring-0"
             >
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].map((m) => (
                 <option key={m} value={m} className="text-slate-900 bg-white">חודש {m}</option>
@@ -1177,21 +1177,21 @@ export default function App() {
           </div>
 
           {/* Clinician Reference Date key */}
-          <div className="flex items-center gap-2 bg-slate-800/60 px-3 py-1.5 rounded-lg text-xs border border-white/10">
+          <div className="flex items-center gap-2 bg-slate-800/60 px-2 py-1 rounded-lg text-[11px] border border-white/10">
             <Calendar className="w-3.5 h-3.5 text-teal-400" />
             <span className="text-slate-300 font-medium font-sans">תאריך ציון קליני:</span>
             <input 
               type="date"
               value={referenceDate}
               onChange={(e) => setReferenceDate(e.target.value)}
-              className="bg-transparent text-teal-300 font-bold outline-none font-mono text-xs w-[110px] cursor-pointer border-0 p-0 focus:ring-0"
+              className="bg-transparent text-teal-300 font-bold outline-none font-mono text-[11px] w-[110px] cursor-pointer border-0 p-0 focus:ring-0"
             />
           </div>
 
           <button 
             onClick={handleExportToExcel}
             disabled={rawRows.length < 2}
-            className="bg-teal-600 hover:bg-teal-500 disabled:opacity-30 px-4 py-2 rounded-lg text-xs font-bold text-white shadow-md transition-all flex items-center gap-2 cursor-pointer border-0"
+            className="bg-teal-600 hover:bg-teal-500 disabled:opacity-30 px-3 py-1.5 rounded-lg text-[11px] font-bold text-white shadow-md transition-all flex items-center gap-2 cursor-pointer border-0"
           >
             <FileDown className="w-4 h-4" />
             ייצא אקסל מעודכן (.xlsx)
@@ -1200,35 +1200,35 @@ export default function App() {
       </header>
 
       {/* THREE GLORIOUS HIGH-CONTRAST METRICS CORES */}
-      <section className="bg-white border-b border-slate-200 px-6 py-1 shrink-0 grid grid-cols-1 md:grid-cols-3 gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+      <section className="bg-white border-b border-slate-200 px-4 py-0.5 shrink-0 grid grid-cols-1 md:grid-cols-3 gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
         
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-2 flex items-center justify-between hover:shadow-sm transition-all">
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-1.5 flex items-center justify-between hover:shadow-sm transition-all">
           <div className="space-y-0.5">
-            <span className="block text-[9px] text-slate-550 font-black tracking-wide uppercase">סה"כ משתתפים שנטענו</span>
-            <p className="text-lg font-mono font-black text-slate-900">{totalLoaded}</p>
+            <span className="block text-[8.5px] text-slate-550 font-black tracking-wide uppercase">סה"כ משתתפים שנטענו</span>
+            <p className="text-base font-mono font-black text-slate-900">{totalLoaded}</p>
           </div>
-          <div className="p-1.5 bg-slate-100 rounded-lg text-slate-500 shrink-0">
-            <Layers className="w-4 h-4" />
+          <div className="p-1 bg-slate-100 rounded-lg text-slate-500 shrink-0">
+            <Layers className="w-3.5 h-3.5" />
           </div>
         </div>
 
-        <div className="bg-teal-50/50 border border-teal-100 rounded-xl p-2 flex items-center justify-between hover:shadow-sm transition-all">
+        <div className="bg-teal-50/50 border border-teal-100 rounded-xl p-1.5 flex items-center justify-between hover:shadow-sm transition-all">
           <div className="space-y-0.5">
-            <span className="block text-[9px] text-teal-700 font-black tracking-wide uppercase">זכאים למעקב חודש {targetFollowUpMonth}</span>
-            <p className="text-lg font-mono font-black text-teal-900">{activeTargetCount}</p>
+            <span className="block text-[8.5px] text-teal-700 font-black tracking-wide uppercase">זכאים למעקב חודש {targetFollowUpMonth}</span>
+            <p className="text-base font-mono font-black text-teal-900">{activeTargetCount}</p>
           </div>
-          <div className="p-1.5 bg-teal-100/50 rounded-lg text-teal-700 shrink-0">
-            <UserCheck className="w-4 h-4" />
+          <div className="p-1 bg-teal-100/50 rounded-lg text-teal-700 shrink-0">
+            <UserCheck className="w-3.5 h-3.5" />
           </div>
         </div>
 
-        <div className="bg-amber-55/30 border border-amber-150/50 rounded-xl p-2 flex items-center justify-between hover:shadow-sm transition-all">
+        <div className="bg-amber-55/30 border border-amber-150/50 rounded-xl p-1.5 flex items-center justify-between hover:shadow-sm transition-all">
           <div className="space-y-0.5">
-            <span className="block text-[9px] text-amber-800 font-black tracking-wide uppercase">צואה חסרה {targetFollowUpMonth}ח׳</span>
-            <p className="text-lg font-mono font-black text-amber-900">{missingStoolTargetCount}</p>
+            <span className="block text-[8.5px] text-amber-800 font-black tracking-wide uppercase">צואה חסרה {targetFollowUpMonth}ח׳</span>
+            <p className="text-base font-mono font-black text-amber-900">{missingStoolTargetCount}</p>
           </div>
-          <div className="p-1.5 bg-amber-100 text-amber-700 shrink-0 animate-pulse rounded-lg">
-            <AlertCircle className="w-4 h-4" />
+          <div className="p-1 bg-amber-100 text-amber-700 shrink-0 animate-pulse rounded-lg">
+            <AlertCircle className="w-3.5 h-3.5" />
           </div>
         </div>
 
