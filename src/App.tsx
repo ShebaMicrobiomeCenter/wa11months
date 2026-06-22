@@ -80,6 +80,7 @@ export interface Participant {
   monthsElapsed: number | null; // כמה חודשים עברו
   isWithdrawn: boolean; // האם פרש (עמודה P עם הערך "פרש")
   formattedPhone: string; // טלפון בפורמט בינלאומי לווטסאפ
+  missingPreviousStool: boolean; // חסרה דגימה משנה שעברה (לפי ת.ז)
 }
 
 // ==========================================
@@ -266,7 +267,7 @@ export function mapRowToParticipant(row: any[], headerMap: Record<string, number
   const phone = getVal("מספר טלפון", 6);
   const researchStatus = getVal("סטטוס במחקר", 15);
   const stool = getVal("צואה", 8);
-  const isWithdrawn = researchStatus.includes("פרש");
+  const isWithdrawn = researchStatus.includes("פרש") || researchStatus.includes("הופסק");
 
   return {
     id,
@@ -296,6 +297,7 @@ export function mapRowToParticipant(row: any[], headerMap: Record<string, number
     monthsElapsed,
     isWithdrawn,
     formattedPhone: formatWhatsAppPhone(phone),
+    missingPreviousStool: false,
   };
 }
 
@@ -465,8 +467,9 @@ export function getSampleParticipants(refDate: Date): Participant[] {
       notes: p.notes,
       
       monthsElapsed,
-      isWithdrawn: p.researchStatus.includes("פרש"),
+  isWithdrawn: p.researchStatus.includes("פרש") || p.researchStatus.includes("הופסק"),
       formattedPhone: formatWhatsAppPhone(p.phone),
+      missingPreviousStool: false,
     };
   });
 }
@@ -481,7 +484,7 @@ const DEFAULT_TEMPLATE = `מרכז המיקרוביום, שיבא
 
 מרכז המיקרוביום שיבא,
 טלפון (או ווטסאפ): 03-5304985
-דוא״ל: Microbiome.Center@sheba.health.gov.il<mailto:Microbiome.Center@sheba.health.gov.il>`;
+דוא״ל: Microbiome.Center@sheba.health.gov.il`;
 
 const CLINICAL_TEMPLATES = [
   {
@@ -565,7 +568,7 @@ export default function App() {
 
   // Tabs & Interactive workflows state
   const [activeTab, setActiveTab] = useState<"matching" | "all" | "sent">("matching"); 
-  const [quickFilterSample, setQuickFilterSample] = useState<"all" | "missing_stool" | "returning" | "has_notes">("all"); 
+  const [quickFilterSample, setQuickFilterSample] = useState<"all" | "missing_stool" | "missing_prev" | "returning" | "has_notes" | "withdrawn">("all");
   const [showManualForm, setShowManualForm] = useState<boolean>(false);
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
   const [editingNotes, setEditingNotes] = useState<string>("");
@@ -616,7 +619,23 @@ export default function App() {
         mappedList.push(p);
       }
 
-      setParticipants(mappedList);
+      // Detect missing previous stool samples by TZ
+      const participantsWithMissingStool = new Set<string>();
+      mappedList.forEach(p => {
+        if (!p.tz) return;
+        const hasStool = p.stool && (p.stool.toUpperCase() === "V" || p.stool.includes("כן") || p.stool.includes("✓") || p.stool.includes("הוגשה"));
+        // If they have a record where stool is missing AND they're NOT the current year (monthsElapsed > 1.5 roughly)
+        if (!hasStool && p.monthsElapsed !== null && p.monthsElapsed > 6) {
+          participantsWithMissingStool.add(p.tz);
+        }
+      });
+
+      const enrichedList = mappedList.map(p => ({
+        ...p,
+        missingPreviousStool: p.tz ? participantsWithMissingStool.has(p.tz) : false
+      }));
+
+      setParticipants(enrichedList);
 
       // Keep selection or auto-pick first eligible candidate
       if (mappedList.length > 0 && !mappedList.some(item => item.id === selectedParticipantId)) {
@@ -994,7 +1013,7 @@ export default function App() {
       list = participants;
     }
 
-    if (filterWithdrawn) {
+    if (filterWithdrawn && quickFilterSample !== "withdrawn") {
       list = list.filter(p => !p.isWithdrawn);
     }
 
@@ -1015,10 +1034,14 @@ export default function App() {
         const hs = p.stool && (p.stool.toUpperCase() === "V" || p.stool.includes("כן") || p.stool.includes("✓") || p.stool.includes("הוגשה"));
         return !hs;
       });
+    } else if (quickFilterSample === "missing_prev") {
+      list = list.filter(p => p.missingPreviousStool);
     } else if (quickFilterSample === "returning") {
       list = list.filter(p => p.returningParticipant && p.returningParticipant.trim() !== "");
     } else if (quickFilterSample === "has_notes") {
       list = list.filter(p => p.notes && p.notes.trim() !== "");
+    } else if (quickFilterSample === "withdrawn") {
+      list = list.filter(p => p.isWithdrawn);
     }
 
     return list;
@@ -1120,8 +1143,8 @@ export default function App() {
     <div className="min-h-screen lg:h-screen w-full flex flex-col lg:overflow-hidden bg-slate-50 text-slate-800 font-sans selection:bg-teal-100 selection:text-teal-950" dir="rtl">
       
       {/* BRAND NEW LUXURIOUS HEADER */}
-      <header className="h-auto py-4 lg:py-0 lg:h-16 bg-[#0E2232] text-white flex flex-col lg:flex-row items-center justify-between px-6 shrink-0 z-30 shadow-lg border-b border-white/5 gap-4 lg:gap-0">
-        <div className="flex items-center gap-4">
+      <header className="h-auto py-3 lg:py-0 lg:h-14 bg-[#0E2232] text-white flex flex-col lg:flex-row items-center justify-between px-6 shrink-0 z-30 shadow-lg border-b border-white/5 gap-3 lg:gap-0">
+        <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center text-white font-extrabold text-xs shadow-md tracking-wider">
             שיבא
           </div>
@@ -1178,38 +1201,35 @@ export default function App() {
       </header>
 
       {/* THREE GLORIOUS HIGH-CONTRAST METRICS CORES */}
-      <section className="bg-white border-b border-slate-200 px-6 py-4 shrink-0 grid grid-cols-1 md:grid-cols-3 gap-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+      <section className="bg-white border-b border-slate-200 px-6 py-2 shrink-0 grid grid-cols-1 md:grid-cols-3 gap-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
         
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-center justify-between hover:shadow-sm transition-all">
-          <div className="space-y-1">
-            <span className="block text-[10px] text-slate-550 font-black tracking-wide uppercase">סה"כ משתתפים שנטענו</span>
-            <p className="text-2xl font-mono font-black text-slate-900">{totalLoaded}</p>
-            <span className="text-[10px] text-slate-400 block font-medium">שורות נתונים פעילות בגדיל האקסל</span>
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between hover:shadow-sm transition-all">
+          <div className="space-y-0.5">
+            <span className="block text-[9px] text-slate-550 font-black tracking-wide uppercase">סה"כ משתתפים שנטענו</span>
+            <p className="text-xl font-mono font-black text-slate-900">{totalLoaded}</p>
           </div>
-          <div className="p-3 bg-slate-100 rounded-lg text-slate-500 shrink-0">
-            <Layers className="w-6 h-6" />
-          </div>
-        </div>
-
-        <div className="bg-teal-50/50 border border-teal-100 rounded-xl p-4 flex items-center justify-between hover:shadow-sm transition-all">
-          <div className="space-y-1">
-            <span className="block text-[10px] text-teal-700 font-black tracking-wide uppercase">זכאים למעקב חודש {targetFollowUpMonth}</span>
-            <p className="text-2xl font-mono font-black text-teal-900">{activeTargetCount}</p>
-            <span className="text-[10px] text-teal-600 block font-medium">מטופלים הנמצאים בחלון הזמן המבוקש</span>
-          </div>
-          <div className="p-3 bg-teal-100/50 rounded-lg text-teal-700 shrink-0">
-            <UserCheck className="w-6 h-6" />
+          <div className="p-2 bg-slate-100 rounded-lg text-slate-500 shrink-0">
+            <Layers className="w-5 h-5" />
           </div>
         </div>
 
-        <div className="bg-amber-55/30 border border-amber-150/50 rounded-xl p-4 flex items-center justify-between hover:shadow-sm transition-all">
-          <div className="space-y-1">
-            <span className="block text-[10px] text-amber-800 font-black tracking-wide uppercase">דגימות צואה חסרות במעמד {targetFollowUpMonth}ח׳</span>
-            <p className="text-2xl font-mono font-black text-amber-900">{missingStoolTargetCount}</p>
-            <span className="text-[10px] text-amber-700 block font-medium">דורשים משלוח פנייה דחופה של ערכת מעבדה</span>
+        <div className="bg-teal-50/50 border border-teal-100 rounded-xl p-3 flex items-center justify-between hover:shadow-sm transition-all">
+          <div className="space-y-0.5">
+            <span className="block text-[9px] text-teal-700 font-black tracking-wide uppercase">זכאים למעקב חודש {targetFollowUpMonth}</span>
+            <p className="text-xl font-mono font-black text-teal-900">{activeTargetCount}</p>
           </div>
-          <div className="p-3 bg-amber-100 text-amber-700 shrink-0 animate-pulse rounded-lg">
-            <AlertCircle className="w-6 h-6" />
+          <div className="p-2 bg-teal-100/50 rounded-lg text-teal-700 shrink-0">
+            <UserCheck className="w-5 h-5" />
+          </div>
+        </div>
+
+        <div className="bg-amber-55/30 border border-amber-150/50 rounded-xl p-3 flex items-center justify-between hover:shadow-sm transition-all">
+          <div className="space-y-0.5">
+            <span className="block text-[9px] text-amber-800 font-black tracking-wide uppercase">צואה חסרה {targetFollowUpMonth}ח׳</span>
+            <p className="text-xl font-mono font-black text-amber-900">{missingStoolTargetCount}</p>
+          </div>
+          <div className="p-2 bg-amber-100 text-amber-700 shrink-0 animate-pulse rounded-lg">
+            <AlertCircle className="w-5 h-5" />
           </div>
         </div>
 
@@ -1532,7 +1552,7 @@ export default function App() {
         </aside>
 
         {/* WORKSPACE PRESTIGE MAIN PORT - GORGEOUS GRID CARD */}
-        <section className="flex-1 flex flex-col lg:overflow-hidden p-4 lg:p-6 gap-6">
+        <section className="flex-1 flex flex-col lg:overflow-hidden p-3 lg:p-4 gap-4">
           
           <div className="bg-white rounded-2xl border border-slate-200 flex-1 flex flex-col lg:overflow-hidden shadow-sm">
             
@@ -1615,6 +1635,27 @@ export default function App() {
                     </span>
                   </button>
 
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveTab("matching");
+                      setQuickFilterSample("withdrawn");
+                    }}
+                    className={`px-4 py-2 rounded-lg transition-all text-center flex items-center gap-2 cursor-pointer ${
+                      quickFilterSample === "withdrawn"
+                        ? "bg-slate-900 text-white shadow-md font-bold scale-[1.02]"
+                        : "text-slate-600 hover:text-slate-900"
+                    }`}
+                  >
+                    <UserX className={`w-3.5 h-3.5 ${quickFilterSample === "withdrawn" ? "text-rose-400" : "text-slate-500"}`} />
+                    <span>פרשו מהמחקר</span>
+                    <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold font-mono ${
+                      quickFilterSample === "withdrawn" ? "bg-rose-600 text-white" : "bg-slate-300 text-slate-800"
+                    }`}>
+                      {participants.filter(p => p.isWithdrawn).length}
+                    </span>
+                  </button>
+
                   <button 
                     type="button"
                     onClick={() => setActiveTab("sent")}
@@ -1671,6 +1712,10 @@ export default function App() {
                   { id: "missing_stool", label: "🧫 חסרה דגימת צואה", count: participants.filter(p => {
                       const hasStool = p.stool && (p.stool.toUpperCase() === "V" || p.stool.includes("כן") || p.stool.includes("✓") || p.stool.includes("הוגשה"));
                       return !hasStool && (!filterWithdrawn || !p.isWithdrawn);
+                    }).length
+                  },
+                  { id: "missing_prev", label: "⏮️ לא מסרו דגימה אשתקד", count: participants.filter(p => {
+                      return p.missingPreviousStool && (!filterWithdrawn || !p.isWithdrawn);
                     }).length
                   },
                   { id: "returning", label: "🔄 משתתפים חוזרים" },
@@ -1774,6 +1819,9 @@ export default function App() {
                             <span className="text-slate-900 font-bold">{p.firstName} {p.lastName}</span>
                             {p.returningParticipant && p.returningParticipant.trim() !== "" && (
                               <span className="bg-teal-50 border border-teal-150 text-teal-700 text-[8.5px] px-1.5 py-0.2 mr-2 rounded font-black select-none">משירה חוזרת</span>
+                            )}
+                            {p.missingPreviousStool && (
+                              <span className="bg-amber-50 border border-amber-200 text-amber-700 text-[8.5px] px-1.5 py-0.2 mr-2 rounded font-black select-none">⚠️ חסרה דגימה משנה שעברה</span>
                             )}
                           </td>
                           <td className="p-3 font-mono text-slate-600">{p.tz || "-"}</td>
