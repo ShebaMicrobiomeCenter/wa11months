@@ -1200,35 +1200,35 @@ export default function App() {
       </header>
 
       {/* THREE GLORIOUS HIGH-CONTRAST METRICS CORES */}
-      <section className="bg-white border-b border-slate-200 px-6 py-2 shrink-0 grid grid-cols-1 md:grid-cols-3 gap-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+      <section className="bg-white border-b border-slate-200 px-6 py-1 shrink-0 grid grid-cols-1 md:grid-cols-3 gap-2 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
         
-        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between hover:shadow-sm transition-all">
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-2 flex items-center justify-between hover:shadow-sm transition-all">
           <div className="space-y-0.5">
             <span className="block text-[9px] text-slate-550 font-black tracking-wide uppercase">סה"כ משתתפים שנטענו</span>
-            <p className="text-xl font-mono font-black text-slate-900">{totalLoaded}</p>
+            <p className="text-lg font-mono font-black text-slate-900">{totalLoaded}</p>
           </div>
-          <div className="p-2 bg-slate-100 rounded-lg text-slate-500 shrink-0">
-            <Layers className="w-5 h-5" />
+          <div className="p-1.5 bg-slate-100 rounded-lg text-slate-500 shrink-0">
+            <Layers className="w-4 h-4" />
           </div>
         </div>
 
-        <div className="bg-teal-50/50 border border-teal-100 rounded-xl p-3 flex items-center justify-between hover:shadow-sm transition-all">
+        <div className="bg-teal-50/50 border border-teal-100 rounded-xl p-2 flex items-center justify-between hover:shadow-sm transition-all">
           <div className="space-y-0.5">
             <span className="block text-[9px] text-teal-700 font-black tracking-wide uppercase">זכאים למעקב חודש {targetFollowUpMonth}</span>
-            <p className="text-xl font-mono font-black text-teal-900">{activeTargetCount}</p>
+            <p className="text-lg font-mono font-black text-teal-900">{activeTargetCount}</p>
           </div>
-          <div className="p-2 bg-teal-100/50 rounded-lg text-teal-700 shrink-0">
-            <UserCheck className="w-5 h-5" />
+          <div className="p-1.5 bg-teal-100/50 rounded-lg text-teal-700 shrink-0">
+            <UserCheck className="w-4 h-4" />
           </div>
         </div>
 
-        <div className="bg-amber-55/30 border border-amber-150/50 rounded-xl p-3 flex items-center justify-between hover:shadow-sm transition-all">
+        <div className="bg-amber-55/30 border border-amber-150/50 rounded-xl p-2 flex items-center justify-between hover:shadow-sm transition-all">
           <div className="space-y-0.5">
             <span className="block text-[9px] text-amber-800 font-black tracking-wide uppercase">צואה חסרה {targetFollowUpMonth}ח׳</span>
-            <p className="text-xl font-mono font-black text-amber-900">{missingStoolTargetCount}</p>
+            <p className="text-lg font-mono font-black text-amber-900">{missingStoolTargetCount}</p>
           </div>
-          <div className="p-2 bg-amber-100 text-amber-700 shrink-0 animate-pulse rounded-lg">
-            <AlertCircle className="w-5 h-5" />
+          <div className="p-1.5 bg-amber-100 text-amber-700 shrink-0 animate-pulse rounded-lg">
+            <AlertCircle className="w-4 h-4" />
           </div>
         </div>
 
