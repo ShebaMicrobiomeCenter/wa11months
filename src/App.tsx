@@ -530,7 +530,7 @@ export default function App() {
   const [exactMatchMode, setExactMatchMode] = useState<"floor" | "round">("floor"); 
   const [templateText, setTemplateText] = useState<string>(() => {
     try {
-      return localStorage.getItem("sheba_whatsapp_template_v3") || CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
+      return localStorage.getItem("sheba_whatsapp_template_v4") || CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
     } catch (e) {
       console.error("Error accessing localStorage", e);
       return CLINICAL_TEMPLATES.find(t => t.id === "std_10m")?.text || DEFAULT_TEMPLATE;
@@ -597,7 +597,7 @@ export default function App() {
   // Store configuration templates on modify
   useEffect(() => {
     try {
-      localStorage.setItem("sheba_whatsapp_template_v3", templateText);
+      localStorage.setItem("sheba_whatsapp_template_v4", templateText);
     } catch (e) {
       console.error("Error setting localStorage", e);
     }
