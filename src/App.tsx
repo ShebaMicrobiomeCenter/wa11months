@@ -41,7 +41,6 @@ import {
   FileEdit,
   RefreshCw,
   TrendingUp,
-  Shield,
   Layers
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
@@ -2135,15 +2134,6 @@ export default function App() {
         </section>
 
       </div>
-
-      {/* PRIVACY GUARD COMPLIANCE FOOTER */}
-      <footer className="h-auto lg:h-9 bg-white border-t border-slate-200 flex flex-col lg:flex-row items-center justify-between px-6 py-2 lg:py-0 shrink-0 text-[10px] text-slate-450 z-30 select-none font-bold gap-2">
-        <div className="text-center lg:text-right">© {new Date().getFullYear()} מחלקת מחקר תזונה ומיקרוביום, מרכז רפואי שיבא, תל השומר</div>
-        <div className="text-rose-700/80 hover:text-rose-700 transition-colors flex items-center gap-1.5 text-center lg:text-left justify-center lg:justify-end">
-          <Shield className="w-3.5 h-3.5 text-rose-600 animate-pulse" />
-          סודיות רפואית עליונה: כל נתוני המעבדה והגליונות המועלים מנותחים פנימית מקומית בדפדפן שלך בלבד!
-        </div>
-      </footer>
 
     </div>
   );
